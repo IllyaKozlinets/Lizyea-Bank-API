@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -15,12 +16,11 @@ public class Transaction {
     private UUID id;
     private UUID fromAccountId;
     private UUID toAccountId;
-    private double amount;
+    private BigDecimal amount;
     private TransactionStatus status;
     private LocalDateTime createdAt;
 
-    public Transaction(UUID id, UUID fromAccountId, UUID toAccountId, double amount, TransactionStatus status, LocalDateTime createdAt) {
-        this.id = id;
+    public Transaction(UUID fromAccountId, UUID toAccountId, BigDecimal amount, TransactionStatus status, LocalDateTime createdAt) {
         this.fromAccountId = fromAccountId;
         this.toAccountId = toAccountId;
         this.amount = amount;
@@ -55,11 +55,11 @@ public class Transaction {
         this.toAccountId = toAccountId;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

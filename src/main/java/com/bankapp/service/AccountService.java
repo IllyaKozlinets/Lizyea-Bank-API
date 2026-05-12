@@ -32,30 +32,6 @@ public class AccountService {
         return account;
     }
 
-    @Transactional
-    public void transfer(UUID fromID, UUID toID, BigDecimal amount) {
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than zero");
-        }
-
-        if (fromID.equals(toID)) {
-            throw new IllegalArgumentException("From account cannot be the same account as To account");
-        }
-
-        var fromAccount = accountRepository.findById(fromID).orElseThrow();
-        var toAccount = accountRepository.findById(toID).orElseThrow();
-
-        if (fromAccount.getBalance().compareTo(amount) < 0) {
-            throw new IllegalArgumentException("From account balance must be greater than amount");
-        }
-
-        toAccount.setBalance(toAccount.getBalance().add(amount));
-        fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
-
-        accountRepository.save(fromAccount);
-        accountRepository.save(toAccount);
-    }
-
     public Account getAccount(UUID id){
         return accountRepository.findById(id).orElseThrow();
     }
