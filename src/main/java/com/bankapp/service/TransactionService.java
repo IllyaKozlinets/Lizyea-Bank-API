@@ -1,10 +1,12 @@
 package com.bankapp.service;
 
+import com.bankapp.model.dto.TransactionCreatedEvent;
 import com.bankapp.model.entity.Transaction;
 import com.bankapp.repository.AccountRepository;
 import com.bankapp.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,10 +18,12 @@ import static com.bankapp.model.entity.enums.TransactionStatus.SUCCESS;
 public class TransactionService {
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final RabbitTemplate rabbitTemplate;
 
-    public TransactionService(AccountRepository accountRepository,  TransactionRepository transactionRepository) {
+    public TransactionService(AccountRepository accountRepository,  TransactionRepository transactionRepository,  RabbitTemplate rabbitTemplate) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @Transactional
@@ -53,6 +57,16 @@ public class TransactionService {
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
         transactionRepository.save(trans);
+
+        TransactionCreatedEvent event = new TransactionCreatedEvent(
+                trans.getId(),
+                trans.getAmount(),
+                fromID,
+                toID,
+                trans.getStatus()
+        );
+
+        rabbitTemplate.convertAndSend("transaction.created", event);
 
         return trans;
     }

@@ -3,8 +3,10 @@ package com.bankapp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(classes = com.bankapp.LizyeaApplication.class)
+@SpringBootTest()
+@ActiveProfiles("test")
 class LizyeaApplicationTests {
 
 	@Test

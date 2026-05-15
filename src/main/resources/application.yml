@@ -1,10 +1,18 @@
 spring:
+  application:
+    name: Lizyea
+
   datasource:
     url: jdbc:postgresql://db:5432/bankdb
     username: postgres
     password: postgres
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
