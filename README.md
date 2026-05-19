@@ -21,7 +21,7 @@ Clone the project to your local machine:
 git clone https://github.com/YOUR_USERNAME/Lizyea.git
 cd Lizyea
 
-3. Build the Application
+2. Build the Application
 Use Maven to compile the source code and package it into an executable JAR file.
 This step ensures that the target folder is updated with the latest changes:
 
