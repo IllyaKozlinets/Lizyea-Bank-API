@@ -40,7 +40,7 @@ API Documentation (Swagger UI): http://localhost:8080/swagger-ui/index.html
 H2 Database Console: http://localhost:8080/h2-console
 JDBC URL: jdbc:h2:mem:testdb
 User: sa
-Password: (leave blank)
+Password: (leave)
 
 Development Configurations
 Security Management
@@ -59,3 +59,34 @@ The project is compiled using Java 21 (Class File Version 65.0).
 Running the application on a Java Runtime Environment (JRE) older than version 21 will result 
 in an UnsupportedClassVersionError. 
 Ensure both the local environment and the Docker base image match this version.
+
+## Features
+- Account creation and account management
+- Transaction workflow logic
+- RESTful API structure
+- Spring Security configuration
+- H2 database console for local testing
+- Swagger/OpenAPI documentation
+- Dockerized deployment
+
+## API Endpoints
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | /api/accounts | Get all accounts |
+| POST | /api/accounts | Create a new account |
+| POST | /api/transactions | Create a transaction |
+| GET | /swagger-ui/index.html | API documentation |
+
+## Architecture
+- Controller layer for REST endpoints
+- Service layer for business logic
+- Repository layer with Spring Data JPA
+- Entity layer for account and transaction models
+- Security configuration for protected resources
+
+## What I Learned
+- Building REST APIs with Spring Boot
+- Managing dependencies with Maven
+- Using Docker for consistent runtime environments
+- Configuring Spring Security
+- Designing a data layer with JPA/Hibernate
