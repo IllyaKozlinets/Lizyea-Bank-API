@@ -1,18 +1,20 @@
-version: '3.8'
-
 services:
 
   db:
-    image: postgres:15
-    container_name: postgres-db
-    environment:
-      POSTGRES_DB: bankdb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+    image: mysql:8.0
+    container_name: mysql-db
     ports:
-      - "5432:5432"
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: qwetarget1
+      MYSQL_DATABASE: myapp
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pqwetarget1" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7
@@ -33,15 +35,18 @@ services:
     build: .
     container_name: bank-app
     depends_on:
-      - db
-      - redis
-      - rabbitmq
+      db:
+        condition: service_healthy # --- ЗМІНЮЄМО ЦЕЙ РЯДОК ---
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/bankdb
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/myapp
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: qwetarget1
 
       SPRING_REDIS_HOST: redis
 
@@ -49,5 +54,5 @@ services:
       SPRING_RABBITMQ_PORT: 5672
 
 volumes:
-  postgres_data:
+  mysql_data:
   redis_data:
