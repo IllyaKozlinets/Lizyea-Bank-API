@@ -36,8 +36,8 @@ public class AccountService {
         return accountRepository.findById(id).orElseThrow();
     }
 
-    public List<Account> getAccountsByUserId(UUID id){
-        return accountRepository.findById(id).stream().toList();
+    public List<Account> getAccountsByUserId(UUID userId){
+        return accountRepository.findAllByUserId(userId);
     }
 
     public void changeCurrency(UUID id, Currency currency){

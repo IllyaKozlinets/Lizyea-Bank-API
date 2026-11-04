@@ -16,6 +16,6 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue transactionQueue(){
-        return new Queue(TRANSACTION_QUEUE) {};
+        return new Queue(TRANSACTION_QUEUE, true);
     }
 }

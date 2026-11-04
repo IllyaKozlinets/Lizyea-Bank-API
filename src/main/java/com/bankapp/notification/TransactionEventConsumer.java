@@ -1,5 +1,6 @@
 package com.bankapp.notification;
 
+import com.bankapp.config.RabbitMQConfig;
 import com.bankapp.model.dto.TransactionCreatedEvent;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransactionEventConsumer {
 
-    @RabbitListener(queues = "transaction.queue")
+    @RabbitListener(queues = RabbitMQConfig.TRANSACTION_QUEUE)
     public void consume (TransactionCreatedEvent event){
         System.out.printf(
                 """

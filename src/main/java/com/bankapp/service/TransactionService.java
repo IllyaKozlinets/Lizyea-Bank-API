@@ -1,5 +1,6 @@
 package com.bankapp.service;
 
+import com.bankapp.config.RabbitMQConfig;
 import com.bankapp.model.dto.TransactionCreatedEvent;
 import com.bankapp.model.entity.Transaction;
 import com.bankapp.repository.AccountRepository;
@@ -66,7 +67,7 @@ public class TransactionService {
                 trans.getStatus()
         );
 
-        rabbitTemplate.convertAndSend("transaction.created", event);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.TRANSACTION_QUEUE, event);
 
         return trans;
     }

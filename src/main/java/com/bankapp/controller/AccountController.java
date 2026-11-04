@@ -35,16 +35,15 @@ public class AccountController {
         return AccountMapper.toResponse(newAccount);
     }
 
-    @PutMapping
-    public void updateAccount( @RequestBody UUID accountId, Currency currency) {
-        accountService.changeCurrency(accountId, currency);
+    @PutMapping("/accounts/{id}/currency")
+    public void updateAccount(@PathVariable UUID id, @RequestParam Currency currency) {
+        accountService.changeCurrency(id, currency);
     }
 
-    @DeleteMapping
-    public void deleteAccount(UUID accountId) {
-        accountService.deleteAccount(accountId);
+    @DeleteMapping("/accounts/{id}")
+    public void deleteAccount(@PathVariable UUID id) {
+        accountService.deleteAccount(id);
     }
-
 
 
 }

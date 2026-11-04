@@ -21,7 +21,7 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @PostMapping("/api/transfers/")
+    @PostMapping("/api/transfers")
     @Operation(summary = "Transfer money between accounts")
     public Transaction moneyTransfer(@RequestBody TransferRequest transferRequest) {
         return transactionService.transfer(transferRequest.getFromID(), transferRequest.getToID(), transferRequest.getAmount());
