@@ -16,9 +16,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         private final JwtProvider jwtProvider;
         private final CustomerUserService customerUserService;
 
-        public JwtAuthenticationFilter(JwtProvider jwtProvider, CustomerUserService customerUserService, CustomerUserService customerUserService1) {
+        public JwtAuthenticationFilter(JwtProvider jwtProvider, CustomerUserService customerUserService) {
             this.jwtProvider = jwtProvider;
-            this.customerUserService = customerUserService1;
+            this.customerUserService = customerUserService;
         }
         @Override
 

@@ -1,55 +1,57 @@
 package com.bankapp.util;
 
 import com.bankapp.model.entity.User;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
 public class JwtProvider {
+    private static final Logger log = LoggerFactory.getLogger(JwtProvider.class);
 
-    private static final String SECRET = "my-super-secret-key-that-is-long-enough-123456";
+    private final SecretKey key;
+    private final long expirationMs;
+
+    public JwtProvider(@Value("${app.jwt.secret}") String secret,
+                       @Value("${app.jwt.expiration-ms}") long expirationMs) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.expirationMs = expirationMs;
+    }
 
     public String generateToken(User user) {
+        Date now = new Date();
         return Jwts.builder()
-                .setSubject(user.getEmail())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
-                .signWith(SignatureAlgorithm.HS512, SECRET)
+                .subject(user.getEmail())
+                .issuedAt(now)
+                .expiration(new Date(now.getTime() + expirationMs))
+                .signWith(key)
                 .compact();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             return true;
-        } catch (ExpiredJwtException e) {
-            System.out.println("Token expired");
-        } catch (UnsupportedJwtException e) {
-            System.out.println("Unsupported token");
-        } catch (MalformedJwtException e) {
-            System.out.println("Malformed token");
-        } catch (SignatureException e) {
-            System.out.println("Invalid signature");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Token is empty");
+        } catch (JwtException | IllegalArgumentException e) {
+            log.debug("Invalid JWT: {}", e.getMessage());
+            return false;
         }
-        return false;
     }
 
     public String getSubject(String token) {
-        return getClaims(token).getSubject();
+        return Jwts.parser().verifyWith(key).build()
+                .parseSignedClaims(token).getPayload().getSubject();
     }
 
-    public Date getExpiration(String token) {
-        return getClaims(token).getExpiration();
-    }
-
-    private Claims getClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET)
-                .parseClaimsJws(token)
-                .getBody();
+    public long getExpirationMs() {
+        return expirationMs;
     }
 }

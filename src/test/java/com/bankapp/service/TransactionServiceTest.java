@@ -1,12 +1,10 @@
-package com.bankapp;
+package com.bankapp.service;
 
 import com.bankapp.model.dto.TransactionCreatedEvent;
 import com.bankapp.model.entity.Account;
 import com.bankapp.model.entity.Transaction;
 import com.bankapp.repository.AccountRepository;
 import com.bankapp.repository.TransactionRepository;
-import com.bankapp.service.AccountService;
-import com.bankapp.service.TransactionService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -23,9 +21,9 @@ import java.util.UUID;
 import static com.bankapp.model.entity.enums.TransactionStatus.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionServiceTest {
@@ -114,7 +112,8 @@ class TransactionServiceTest {
         ArgumentCaptor<TransactionCreatedEvent> eventCaptor =
                 ArgumentCaptor.forClass(TransactionCreatedEvent.class);
 
-        verify(rabbitTemplate).convertAndSend(eq("transaction.created"), eventCaptor.capture());
+
+        verify(rabbitTemplate, times(1)).convertAndSend(eq("transaction.queue"), eventCaptor.capture());
 
         TransactionCreatedEvent capturedEvent = eventCaptor.getValue();
         assertEquals(result.getId(), capturedEvent.transactionId());
